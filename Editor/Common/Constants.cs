@@ -18,7 +18,8 @@ namespace ADOFAIRunner.Common
             if (guids.Length > 0)
             {
                 string asmdefPath = AssetDatabase.GUIDToAssetPath(guids[0]);
-                ADOFAIRunnerRootPath = Path.GetDirectoryName(asmdefPath).Replace("\\", "/");
+                ADOFAIRunnerRootPath = Path.GetDirectoryName(Path.GetDirectoryName(asmdefPath)).Replace("\\", "/");
+
             }
             else
             {

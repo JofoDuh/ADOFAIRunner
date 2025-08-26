@@ -1,12 +1,8 @@
-using ADOFAIRunner.Common;
 using ADOFAIRunner.Core;
 using ADOFAIRunner.Core.Windows;
-using ADOFAIRunner.Utilities;
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 using UnityToolbarExtender;
 using static UnityEditor.EditorGUILayout;
 
@@ -19,10 +15,11 @@ namespace ADOFAIRunner.Toolbar
         public static int selectedIndex;
         private static Texture2D gearIcon = EditorGUIUtility.IconContent("SettingsIcon").image as Texture2D;
         private static bool runButtonEnabled = true;
+        static bool FastRunOption = false;
 
         static RunADOFAIToolbar()
         {
-            ToolbarExtender.RightToolbarGUI.Insert(0, OnToolbarGUI);
+            ToolbarExtender.LeftToolbarGUI.Add(OnToolbarGUI);
         }
 
         private static void OnToolbarGUI()
@@ -62,7 +59,32 @@ namespace ADOFAIRunner.Toolbar
                             Debug.Log($"Running {setting.AvailableMods[setting.AvailableModsSelectedIndex]}");
                             OnRunButtonClicked();
                         }
-                        GUI.enabled = true; // reset so other UI isn’t disabled
+                        if (GUILayout.Button(
+                            new GUIContent("FRun", "Quick Run ADOFAI without compiling or anything"),
+                            GUILayout.Width(43f)))
+                        {
+                            FastRunOption = !FastRunOption;
+                        }
+                        if (FastRunOption)
+                        {
+                            if (GUILayout.Button(
+                                new GUIContent("UMM", "Quick Run ADOFAI without compiling or anything"),
+                                GUILayout.Width(45f)))
+                            {
+                                Debug.Log($"Running {setting.AvailableMods[setting.AvailableModsSelectedIndex]}");
+                                FastRunOption = false;
+                                OnRunButtonClicked(true, RunLogic.BuildTarget.UMM);
+                            }
+                            if (GUILayout.Button(
+                                new GUIContent("BepInEx", "Quick Run ADOFAI without compiling or anything"),
+                                GUILayout.Width(55f)))
+                            {
+                                Debug.Log($"Running {setting.AvailableMods[setting.AvailableModsSelectedIndex]}");
+                                FastRunOption = false;
+                                OnRunButtonClicked(true, RunLogic.BuildTarget.BepInEx);
+                            }
+                        }
+                        GUI.enabled = true; 
 
                         if (GUILayout.Button(new GUIContent(gearIcon, "Open ADOFAIRunner Settings"), 
                             GUILayout.Width(20f), GUILayout.Height(20f)))
@@ -75,21 +97,18 @@ namespace ADOFAIRunner.Toolbar
                 }
             }
         }
-        private static async void OnRunButtonClicked()
+        private static async void OnRunButtonClicked(bool fastRun = false, RunLogic.BuildTarget build = RunLogic.BuildTarget.Auto)
         {
             runButtonEnabled = false;
             try
             {
-                await RunLogic.BuildAndRun(Main.setting);
+                await RunLogic.BuildAndRun(Main.setting, fastRun, build);
             }
             catch (System.Exception e)
             {
                 Debug.LogError($"An error occurred during the build and run process: {e.Message}");
             }
-            finally
-            {
-                runButtonEnabled = false;
-            }
+            runButtonEnabled = true;
         }
     }
 }

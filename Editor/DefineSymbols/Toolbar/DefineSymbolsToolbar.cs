@@ -29,7 +29,7 @@ namespace ADOFAIRunner.DefineSymbols.Toolbar
                         setting.AvailableBuildOptionsSelectedIndex = EditorGUILayout.Popup(
                             setting.AvailableBuildOptionsSelectedIndex,
                             setting.AvailableBuildOptions,
-                            GUILayout.Width(150)
+                            GUILayout.Width(135)
                         );
                     }
                     finally { }

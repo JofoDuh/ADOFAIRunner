@@ -31,6 +31,7 @@ namespace ADOFAIRunner.Core.Windows
 
         private void CreateGUI()
         {
+            Debug.Log(Constants.ADOFAIRunnerRootPath);
             MainPanel.CloneTree(rootVisualElement);
 
             _settingslist = rootVisualElement.Q<ListView>("settings-list");

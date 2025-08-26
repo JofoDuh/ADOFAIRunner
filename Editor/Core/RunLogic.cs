@@ -1,4 +1,6 @@
 using ADOFAIRunner.Utilities;
+using NUnit.Framework.Internal.Commands;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,58 +11,76 @@ namespace ADOFAIRunner.Core
 {
     public static class RunLogic
     {
+        public enum BuildTarget { Auto, BepInEx, UMM }
+
         /// <summary>
         /// Main entry point for the build, deploy, and run process.
         /// </summary>
         /// <param name="settings">The settings ScriptableObject containing all required paths and configurations.</param>
-        public static async Task BuildAndRun(Setting settings)
+        public static async Task BuildAndRun(Setting settings, bool fastRun = false, BuildTarget build = BuildTarget.Auto)
         {
-            // 1. Get the selected pipeline from settings
-            var selectedPipeline = settings.AvailableMods[settings.AvailableModsSelectedIndex];
-            if (selectedPipeline == null)
-            {
-                Debug.LogError("No pipeline selected in ADOFAIRunner settings. Aborting.");
-                return;
-            }
-
-            // 2. Execute the ThunderKit pipeline
-            Debug.Log($"Executing pipeline: {selectedPipeline.name}...");
-            await selectedPipeline.Execute();
-            Debug.Log("Pipeline execution finished.");
-
-            // 3. Determine source and destination paths
-            var manifest = selectedPipeline.manifest;
-            if (manifest == null)
-            {
-                Debug.LogError($"Pipeline '{selectedPipeline.name}' does not have an assigned manifest. Aborting.");
-                return;
-            }
-
-            string modName = selectedPipeline.name;
             string buildType = ProjectUtilities.GetCurrentBuild();
-            string baseModPath = buildType == "BEPINEX" ? settings.BepInExModFolderPath : settings.UMMModFolderPath;
 
-            if (string.IsNullOrEmpty(baseModPath))
+            if (!fastRun)
             {
-                Debug.LogError($"{buildType} mod folder path is not set in settings. Aborting.");
-                return;
+                // 1. Get the selected pipeline from settings
+                var selectedPipeline = settings.AvailableMods[settings.AvailableModsSelectedIndex];
+                if (selectedPipeline == null)
+                {
+                    Debug.LogError("No pipeline selected in ADOFAIRunner settings. Aborting.");
+                    return;
+                }
+
+                // 2. Execute the ThunderKit pipeline
+                Debug.Log($"Executing pipeline: {selectedPipeline.name}...");
+                await selectedPipeline.Execute();
+                Debug.Log("Pipeline execution finished.");
+
+                // 3. Determine source and destination paths
+                var manifest = selectedPipeline.manifest;
+                if (manifest == null)
+                {
+                    Debug.LogError($"Pipeline '{selectedPipeline.name}' does not have an assigned manifest. Aborting.");
+                    return;
+                }
+
+                string modName = selectedPipeline.name;
+                string baseModPath = build switch
+                {
+                    BuildTarget.Auto => buildType == "BEPINEX" ? settings.BepInExModFolderPath : settings.UMMModFolderPath,
+                    BuildTarget.BepInEx => settings.BepInExModFolderPath,
+                    BuildTarget.UMM => settings.UMMModFolderPath,
+                    _ => throw new ArgumentOutOfRangeException(nameof(build))
+                };
+
+                if (string.IsNullOrEmpty(baseModPath))
+                {
+                    Debug.LogError($"{buildType} mod folder path is not set in settings. Aborting.");
+                    return;
+                }
+
+                string modDestinationFolder = Path.Combine(baseModPath, modName);
+                string assetsDestinationFolder = Path.Combine(modDestinationFolder, "assets");
+
+                // 4. Process and move assembly files
+                await ProcessAssemblies(manifest, settings.ThunderkitOutputPath, modDestinationFolder);
+
+                // 5. Process and move asset bundles
+                await ProcessAssetBundles(manifest, settings.ThunderkitOutputPath, assetsDestinationFolder);
             }
-
-            // Construct destination paths
-            string modDestinationFolder = Path.Combine(baseModPath, modName);
-            string assetsDestinationFolder = Path.Combine(modDestinationFolder, "assets");
-
-            // 4. Process and move assembly files
-            await ProcessAssemblies(manifest, settings.ThunderkitOutputPath, modDestinationFolder);
-
-            // 5. Process and move asset bundles
-            await ProcessAssetBundles(manifest, settings.ThunderkitOutputPath, assetsDestinationFolder);
 
             // 6. Launch the game executable
-            string exePath = buildType == "BEPINEX" ? settings.BepInExExePath : settings.UnityModManagerExePath;
+            string exePath = build switch
+            {
+                BuildTarget.Auto => buildType == "BEPINEX" ? settings.BepInExExePath : settings.UnityModManagerExePath,
+                BuildTarget.BepInEx => settings.BepInExExePath,
+                BuildTarget.UMM => settings.UnityModManagerExePath,
+                _ => throw new ArgumentOutOfRangeException(nameof(build))
+            };
+
             if (string.IsNullOrEmpty(exePath) || !File.Exists(exePath))
             {
-                Debug.LogError($"Executable path for {buildType} is not set or is invalid. Cannot run the game.");
+                Debug.LogError($"Executable path is not set or is invalid. Cannot run the game.");
                 return;
             }
 
