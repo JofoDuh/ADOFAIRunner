@@ -1,0 +1,30 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
+using UnityEngine;
+
+namespace ADOFAIRunner.Common
+{
+    public class Constants
+    {
+        public const string ADOFAIRunnerMenuRoot = "Tools/ADOFAI Runner/";
+        public const string settingsFolder = "Assets/ADOFAIRunnerSettings";
+        public static readonly string ADOFAIRunnerRootPath;
+
+        static Constants()
+        {
+            string[] guids = AssetDatabase.FindAssets("ADOFAIRunner t:AssemblyDefinitionAsset");
+            if (guids.Length > 0)
+            {
+                string asmdefPath = AssetDatabase.GUIDToAssetPath(guids[0]);
+                ADOFAIRunnerRootPath = Path.GetDirectoryName(asmdefPath).Replace("\\", "/");
+            }
+            else
+            {
+                Debug.LogWarning("ADOFAIRunner.asmdef not found! Paths will fallback.");
+                ADOFAIRunnerRootPath = "Assets/Plugins/ADOFAIRunner";
+            }
+        }
+    }
+}
