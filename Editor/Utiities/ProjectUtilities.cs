@@ -5,6 +5,12 @@ namespace ADOFAIRunner.Utilities
 {
     public static class ProjectUtilities
     {
+        public static float DynamicaWidth(string text, float extraAmount)
+        {
+            GUIStyle popupStyle = EditorStyles.popup;
+            Vector2 size = popupStyle.CalcSize(new GUIContent(text));
+            return size.x + extraAmount;
+        }
         public static void CreateFolderInAssets(string folderName)
         {
             string path = "Assets/" + folderName;

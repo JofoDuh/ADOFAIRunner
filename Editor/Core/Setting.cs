@@ -1,6 +1,7 @@
 using ADOFAIRunner.DefineSymbols.Core;
 using System.Collections.Generic;
 using ThunderKit.Core.Pipelines;
+using System.IO;
 using UnityEngine;
 
 namespace ADOFAIRunner.Core
@@ -14,7 +15,7 @@ namespace ADOFAIRunner.Core
         public string UnityModManagerExePath;
         public string UMMModFolderPath;
 
-        public string ThunderkitOutputPath;
+        public string ThunderkitOutputPath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, "ThunderKit");
 
         public bool AutoCheckBuild;
 

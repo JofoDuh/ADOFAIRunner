@@ -1,5 +1,6 @@
 using ADOFAIRunner.Core;
 using ADOFAIRunner.Core.Windows;
+using ADOFAIRunner.Utilities;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -12,7 +13,6 @@ namespace ADOFAIRunner.Toolbar
     public static class RunADOFAIToolbar
     {
         public static Setting setting = Main.setting;
-        public static int selectedIndex;
         private static Texture2D gearIcon = EditorGUIUtility.IconContent("SettingsIcon").image as Texture2D;
         private static bool runButtonEnabled = true;
         static bool FastRunOption = false;
@@ -29,25 +29,20 @@ namespace ADOFAIRunner.Toolbar
                 GUILayout.Space(2);
                 using (new HorizontalScope())
                 {
-                    if (setting.AvailableMods.Count <= 0 || selectedIndex >= setting.AvailableMods.Count) return;
-                    string currentText = setting.AvailableMods[selectedIndex].name;
-                    GUIStyle popupStyle = EditorStyles.popup;
-                    Vector2 size = popupStyle.CalcSize(new GUIContent(currentText));
-                    float dynamicWidth = size.x + 5f;
-                    //float dynamicSpacing = 760f - 35f - dynamicWidth; // Good if self-contained, bad when other uses LeftToolbar as well
-                    //GUILayout.Space(dynamicSpacing);
+                    if (setting.AvailableMods.Count <= 0 || setting.AvailableModsSelectedIndex >= setting.AvailableMods.Count) return;
 
                     try
                     {
-                        var list = new List<string>();
-                        foreach (var Pipeline in setting.AvailableMods)
+                        var list = new GUIContent[setting.AvailableMods.Count];
+                        for (int i = 0; i < setting.AvailableMods.Count; i++)
                         {
-                            list.Add(Pipeline.name);
+                            list[i] = new GUIContent(setting.AvailableMods[i].name, "Add more mods in the ADOFAIRunner settings!");
                         }
+
                         setting.AvailableModsSelectedIndex = EditorGUILayout.Popup(
                             setting.AvailableModsSelectedIndex,
-                            list.ToArray(),
-                            GUILayout.Width(dynamicWidth)
+                            list,
+                            GUILayout.Width(ProjectUtilities.DynamicaWidth(setting.AvailableMods[setting.AvailableModsSelectedIndex].name, 5f))
                         );
 
                         // Button
