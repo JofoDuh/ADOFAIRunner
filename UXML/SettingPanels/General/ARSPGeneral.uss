@@ -98,3 +98,11 @@
 .AR-ScrollView .unity-scroll-view__content-container {
     flex-grow: 1;
 }
+
+.AR-PropertyField {
+    flex-grow: 1;
+}
+
+.AR-PropertyField .unity-text-element {
+    font-size: 16px;
+}

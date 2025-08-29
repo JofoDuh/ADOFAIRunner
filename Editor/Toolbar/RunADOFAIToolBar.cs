@@ -1,7 +1,6 @@
 using ADOFAIRunner.Core;
 using ADOFAIRunner.Core.Windows;
 using ADOFAIRunner.Utilities;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityToolbarExtender;
@@ -29,31 +28,36 @@ namespace ADOFAIRunner.Toolbar
                 GUILayout.Space(2);
                 using (new HorizontalScope())
                 {
-                    if (setting.AvailableMods.Count <= 0 || setting.AvailableModsSelectedIndex >= setting.AvailableMods.Count) return;
-
                     try
                     {
-                        var list = new GUIContent[setting.AvailableMods.Count];
-                        for (int i = 0; i < setting.AvailableMods.Count; i++)
+                        if (setting.AvailableMods != null &&
+                            setting.AvailableMods.Count > 0 &&
+                            setting.AvailableModsSelectedIndex >= 0 &&
+                            setting.AvailableModsSelectedIndex < setting.AvailableMods.Count &&
+                            setting.AvailableMods[setting.AvailableModsSelectedIndex] != null)
                         {
-                            list[i] = new GUIContent(setting.AvailableMods[i].name, "Add more mods in the ADOFAIRunner settings!");
+                            var list = new GUIContent[setting.AvailableMods.Count];
+                            for (int i = 0; i < setting.AvailableMods.Count; i++)
+                            {
+                                list[i] = new GUIContent(setting.AvailableMods[i].name, "Add more mods in the ADOFAIRunner settings!");
+                            }
+
+                            setting.AvailableModsSelectedIndex = EditorGUILayout.Popup(
+                                setting.AvailableModsSelectedIndex,
+                                list,
+                                GUILayout.Width(ProjectUtilities.DynamicaWidth(setting.AvailableMods[setting.AvailableModsSelectedIndex].name, 5f))
+                            );
+
+                            GUI.enabled = runButtonEnabled;
+                            if (GUILayout.Button(
+                                new GUIContent("Run", "Run ADOFAI after importing ThunderKit's compiled things"),
+                                GUILayout.Width(35f)))
+                            {
+                                Debug.Log($"Running {setting.AvailableMods[setting.AvailableModsSelectedIndex]}");
+                                OnRunButtonClicked();
+                            }
                         }
 
-                        setting.AvailableModsSelectedIndex = EditorGUILayout.Popup(
-                            setting.AvailableModsSelectedIndex,
-                            list,
-                            GUILayout.Width(ProjectUtilities.DynamicaWidth(setting.AvailableMods[setting.AvailableModsSelectedIndex].name, 5f))
-                        );
-
-                        // Button
-                        GUI.enabled = runButtonEnabled;
-                        if (GUILayout.Button(
-                            new GUIContent("Run", "Run ADOFAI after importing ThunderKit's compiled things"),
-                            GUILayout.Width(35f)))
-                        {
-                            Debug.Log($"Running {setting.AvailableMods[setting.AvailableModsSelectedIndex]}");
-                            OnRunButtonClicked();
-                        }
                         if (GUILayout.Button(
                             new GUIContent("FRun", "Quick Run ADOFAI without compiling or anything"),
                             GUILayout.Width(43f)))
@@ -66,7 +70,6 @@ namespace ADOFAIRunner.Toolbar
                                 new GUIContent("UMM", "Quick Run ADOFAI without compiling or anything"),
                                 GUILayout.Width(45f)))
                             {
-                                Debug.Log($"Running {setting.AvailableMods[setting.AvailableModsSelectedIndex]}");
                                 FastRunOption = false;
                                 OnRunButtonClicked(true, RunLogic.BuildTarget.UMM);
                             }
@@ -74,7 +77,6 @@ namespace ADOFAIRunner.Toolbar
                                 new GUIContent("BepInEx", "Quick Run ADOFAI without compiling or anything"),
                                 GUILayout.Width(55f)))
                             {
-                                Debug.Log($"Running {setting.AvailableMods[setting.AvailableModsSelectedIndex]}");
                                 FastRunOption = false;
                                 OnRunButtonClicked(true, RunLogic.BuildTarget.BepInEx);
                             }

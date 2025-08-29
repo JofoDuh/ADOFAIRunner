@@ -4,7 +4,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityToolbarExtender;
 using static UnityEditor.EditorGUILayout;
-using static UnityEditor.Progress;
 
 namespace ADOFAIRunner.DefineSymbols.Toolbar
 {
