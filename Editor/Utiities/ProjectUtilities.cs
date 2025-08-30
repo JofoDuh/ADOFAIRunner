@@ -17,7 +17,6 @@ namespace ADOFAIRunner.Utilities
 
             if (!AssetDatabase.IsValidFolder(path))
             {
-                // Create the folder inside Assets
                 AssetDatabase.CreateFolder("Assets", folderName);
                 AssetDatabase.Refresh();
                 Debug.Log($"Created folder at: {path}");
