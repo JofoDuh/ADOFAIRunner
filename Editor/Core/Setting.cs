@@ -49,14 +49,18 @@ namespace ADOFAIRunner.Core
                 return;
             }
 
-            string[] lines = File.ReadAllLines(gitignorePath);
             string header = "# Jofo Setting";
             string rule = "/[Aa]ssets/ADOFAIRunnerSettings";
 
-            if (!lines.Contains(rule))
+            string all = File.ReadAllText(gitignorePath);
+
+            bool endsWithNewline = all.EndsWith("\n") || all.EndsWith("\r");
+
+            if (!all.Contains(rule))
             {
                 using (StreamWriter sw = File.AppendText(gitignorePath))
                 {
+                    if (!endsWithNewline) sw.WriteLine(); 
                     sw.WriteLine("");
                     sw.WriteLine(header);
                     sw.WriteLine(rule);
