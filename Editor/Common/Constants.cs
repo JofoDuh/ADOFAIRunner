@@ -10,6 +10,7 @@ namespace ADOFAIRunner.Common
     {
         public const string ADOFAIRunnerMenuRoot = "Tools/ADOFAI Runner/";
         public const string settingsFolder = "Assets/ADOFAIRunnerSettings";
+        public const string LogFolder = "Assets/ADOFAIRunnerSettings/Logs";
         public static readonly string ADOFAIRunnerRootPath;
 
         static Constants()

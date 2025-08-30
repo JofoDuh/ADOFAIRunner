@@ -6,7 +6,7 @@ using ADOFAIRunner.Common;
 
 namespace ADOFAIRunner.DefineSymbols.Core
 {
-    public class DefineSymbolToggler
+    public static class DefineSymbolToggler
     {
         static Setting setting = Main.setting;
         internal const string UMM_SYMBOL = "UNITYMODMANAGER";

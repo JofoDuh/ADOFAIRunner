@@ -1,3 +1,4 @@
+using ADOFAIRunner.Core;
 using UnityEditor;
 using UnityEngine;
 
@@ -54,11 +55,20 @@ namespace ADOFAIRunner.Utilities
             bool hasUMM = symbols.Contains(UMM_SYMBOL);
             bool hasBepInEx = symbols.Contains(BEPINEX_SYMBOL);
 
-            if (hasUMM && !hasBepInEx)
+            if ((hasUMM && !hasBepInEx) || 
+                (Main.setting.AvailableBuildOptions[Main.setting.AvailableBuildOptionsSelectedIndex] == "Unity Mod Manager"))
             {
                 return UMM_SYMBOL;
             }
-            return BEPINEX_SYMBOL;
+            else if ((hasBepInEx && !hasUMM) ||
+                (Main.setting.AvailableBuildOptions[Main.setting.AvailableBuildOptionsSelectedIndex] == "BepInEx"))
+            {
+                return BEPINEX_SYMBOL;
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
     }
 }

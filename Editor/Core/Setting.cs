@@ -1,9 +1,7 @@
 using ADOFAIRunner.DefineSymbols.Core;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using ThunderKit.Core.Pipelines;
-using UnityEditor.VersionControl;
 using UnityEngine;
 
 namespace ADOFAIRunner.Core
@@ -40,6 +38,7 @@ namespace ADOFAIRunner.Core
 
         public void Initialize()
         {
+            DefineSymbols.Core.DefineSymbolToggler.SetBuild(0);
             string rootPath = Directory.GetParent(Application.dataPath).FullName;
             string gitignorePath = Path.Combine(rootPath, ".gitignore");
 

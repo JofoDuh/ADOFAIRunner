@@ -1,11 +1,9 @@
 using ADOFAIRunner.Utilities;
-using NUnit.Framework.Internal.Commands;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ThunderKit.Core.Manifests.Datums;
-using UnityEditor;
 using UnityEngine;
 
 namespace ADOFAIRunner.Core
@@ -20,14 +18,17 @@ namespace ADOFAIRunner.Core
         /// <param name="settings">The settings ScriptableObject containing all required paths and configurations.</param>
         public static async Task BuildAndRun(Setting settings, bool fastRun = false, BuildTarget build = BuildTarget.Auto)
         {
+            Logger.Clear();
             string buildType = ProjectUtilities.GetCurrentBuild();
+            if (string.IsNullOrEmpty(buildType))
+            {
+                Debug.Log("Build Type is null. Aborting. Make sure symbol definition are properly set");
+                return;
+            }
 
             if (!fastRun)
             {
-                var assembly = typeof(EditorWindow).Assembly;
-                var consoleWindowType = assembly.GetType("UnityEditor.ConsoleWindow");
-                if (consoleWindowType != null)
-                    EditorWindow.GetWindow(consoleWindowType);
+                ProjectUtilities.OpenConsoleWindow();
 
                 // 1. Get the selected pipeline from settings
                 var selectedPipeline = settings.AvailableMods[settings.AvailableModsSelectedIndex];
@@ -42,8 +43,7 @@ namespace ADOFAIRunner.Core
                 await selectedPipeline.Execute();
                 Debug.Log("Pipeline execution finished.");
 
-                if (consoleWindowType != null)
-                    EditorWindow.GetWindow(consoleWindowType);
+                ProjectUtilities.OpenConsoleWindow();
 
                 // 3. Determine source and destination paths
                 var manifest = selectedPipeline.manifest;
