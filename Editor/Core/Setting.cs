@@ -63,7 +63,7 @@ namespace ADOFAIRunner.Core
                     if (!endsWithNewline) sw.WriteLine(); 
                     sw.WriteLine("");
                     sw.WriteLine(header);
-                    sw.WriteLine(rule);
+                    sw.Write(rule);
                 }
 
                 Debug.Log("Added ADOFAIRunnerSettings ignore rule to .gitignore");
