@@ -53,7 +53,7 @@ namespace ADOFAIRunner.Core
                     return;
                 }
 
-                string modName = manifest.Identity.name;
+                string modName = manifest.Identity.Name;
                 string baseModPath = build switch
                 {
                     BuildTarget.Auto => buildType == "BEPINEX" ? settings.BepInExModFolderPath : settings.UMMModFolderPath,
