@@ -1,7 +1,9 @@
 using ADOFAIRunner.DefineSymbols.Core;
 using System.Collections.Generic;
-using ThunderKit.Core.Pipelines;
 using System.IO;
+using System.Linq;
+using ThunderKit.Core.Pipelines;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 namespace ADOFAIRunner.Core
@@ -16,8 +18,6 @@ namespace ADOFAIRunner.Core
         public string UMMModFolderPath;
 
         public string ThunderkitOutputPath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, "ThunderKit");
-
-        public bool AutoCheckBuild;
 
         public List<Pipeline> AvailableMods = new List<Pipeline>();
         public int AvailableModsSelectedIndex;
@@ -40,7 +40,34 @@ namespace ADOFAIRunner.Core
 
         public void Initialize()
         {
+            string rootPath = Directory.GetParent(Application.dataPath).FullName;
+            string gitignorePath = Path.Combine(rootPath, ".gitignore");
 
+            if (!File.Exists(gitignorePath))
+            {
+                Debug.LogWarning($".gitignore not found at {gitignorePath}");
+                return;
+            }
+
+            string[] lines = File.ReadAllLines(gitignorePath);
+            string header = "# Jofo Setting";
+            string rule = "/[Aa]ssets/ADOFAIRunnerSettings";
+
+            if (!lines.Contains(rule))
+            {
+                using (StreamWriter sw = File.AppendText(gitignorePath))
+                {
+                    sw.WriteLine("");
+                    sw.WriteLine(header);
+                    sw.WriteLine(rule);
+                }
+
+                Debug.Log("Added ADOFAIRunnerSettings ignore rule to .gitignore");
+            }
+            else
+            {
+                Debug.Log("Rule already exists in .gitignore");
+            }
         }
     }
 }
