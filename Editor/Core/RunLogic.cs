@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ThunderKit.Core.Manifests.Datums;
+using UnityEditor;
 using UnityEngine;
 
 namespace ADOFAIRunner.Core
@@ -23,6 +24,11 @@ namespace ADOFAIRunner.Core
 
             if (!fastRun)
             {
+                var assembly = typeof(EditorWindow).Assembly;
+                var consoleWindowType = assembly.GetType("UnityEditor.ConsoleWindow");
+                if (consoleWindowType != null)
+                    EditorWindow.GetWindow(consoleWindowType);
+
                 // 1. Get the selected pipeline from settings
                 var selectedPipeline = settings.AvailableMods[settings.AvailableModsSelectedIndex];
                 if (selectedPipeline == null)
@@ -36,6 +42,9 @@ namespace ADOFAIRunner.Core
                 await selectedPipeline.Execute();
                 Debug.Log("Pipeline execution finished.");
 
+                if (consoleWindowType != null)
+                    EditorWindow.GetWindow(consoleWindowType);
+
                 // 3. Determine source and destination paths
                 var manifest = selectedPipeline.manifest;
                 if (manifest == null)
@@ -44,7 +53,7 @@ namespace ADOFAIRunner.Core
                     return;
                 }
 
-                string modName = selectedPipeline.name;
+                string modName = manifest.name;
                 string baseModPath = build switch
                 {
                     BuildTarget.Auto => buildType == "BEPINEX" ? settings.BepInExModFolderPath : settings.UMMModFolderPath,

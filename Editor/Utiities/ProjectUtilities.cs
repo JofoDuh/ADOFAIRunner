@@ -5,6 +5,22 @@ namespace ADOFAIRunner.Utilities
 {
     public static class ProjectUtilities
     {
+        [MenuItem("Tools/Open Console %#c")]
+        public static void OpenConsoleWindow()
+        {
+            var assembly = typeof(EditorWindow).Assembly;
+            var consoleWindowType = assembly.GetType("UnityEditor.ConsoleWindow");
+
+            if (consoleWindowType != null)
+            {
+                EditorWindow.GetWindow(consoleWindowType);
+            }
+            else
+            {
+                Debug.LogError("Could not find UnityEditor.ConsoleWindow type.");
+            }
+        }
+
         public static float DynamicaWidth(string text, float extraAmount)
         {
             GUIStyle popupStyle = EditorStyles.popup;
