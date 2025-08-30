@@ -1,4 +1,5 @@
 using ADOFAIRunner.Core;
+using ADOFAIRunner.DefineSymbols.Core;
 using UnityEditor;
 using UnityEngine;
 
@@ -55,6 +56,7 @@ namespace ADOFAIRunner.Utilities
             bool hasUMM = symbols.Contains(UMM_SYMBOL);
             bool hasBepInEx = symbols.Contains(BEPINEX_SYMBOL);
 
+            if (!hasUMM && !hasBepInEx) DefineSymbolToggler.SetBuild(Main.setting.AvailableBuildOptionsSelectedIndex);
             if ((hasUMM && !hasBepInEx) || 
                 (Main.setting.AvailableBuildOptions[Main.setting.AvailableBuildOptionsSelectedIndex] == "Unity Mod Manager"))
             {
