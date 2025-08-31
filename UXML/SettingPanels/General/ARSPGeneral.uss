@@ -28,7 +28,6 @@
     flex-grow: 0;
     flex-shrink: 0;
     margin-right: 8px;
-    width: auto;
     color: rgb(255, 255, 255);
     flex-direction: column;
     margin-left: 0;
@@ -105,4 +104,65 @@
 
 .AR-PropertyField .unity-text-element {
     font-size: 16px;
+    color: rgb(255, 255, 255);
+}
+
+.AR-Toggle {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    justify-content: flex-start;
+    align-items: center;
+    align-self: center;
+}
+
+.AR-Toggle .unity-text-element {
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+    margin-top: 0;
+    margin-right: 8px;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+}
+
+.AR-Toggle .unity-toggle__input {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+}
+
+.AR-Toggle .unity-toggle__input .unity-toggle__checkmark {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    width: 20px;
+    height: 20px;
+    border-left-color: rgb(149, 149, 149);
+    border-right-color: rgb(149, 149, 149);
+    border-top-color: rgb(149, 149, 149);
+    border-bottom-color: rgb(149, 149, 149);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    background-color: rgb(255, 255, 255);
 }

@@ -88,7 +88,8 @@ namespace ADOFAIRunner.Toolbar
                         {
                             SettingsWindow.ShowSetting();
                         }
-                        GUILayout.Space(10);
+                        //GUILayout.Space(5);
+                        setting.IncludePDBFile = GUILayout.Toggle(setting.IncludePDBFile, new GUIContent("PDB", "Check to include the PDB file when moving"));
                     }
                     finally { }
                 }

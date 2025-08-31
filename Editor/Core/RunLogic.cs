@@ -72,7 +72,7 @@ namespace ADOFAIRunner.Core
                 string assetsDestinationFolder = Path.Combine(modDestinationFolder, "assets");
 
                 // 4. Process and move assembly files
-                await ProcessAssemblies(manifest, settings.ThunderkitOutputPath, modDestinationFolder);
+                await ProcessAssemblies(manifest, settings.ThunderkitOutputPath, modDestinationFolder, settings.IncludePDBFile);
 
                 // 5. Process and move asset bundles
                 await ProcessAssetBundles(manifest, settings.ThunderkitOutputPath, assetsDestinationFolder);
@@ -100,7 +100,7 @@ namespace ADOFAIRunner.Core
         /// <summary>
         /// Finds, copies, and cleans up compiled assemblies.
         /// </summary>
-        private static async Task ProcessAssemblies(ThunderKit.Core.Manifests.Manifest manifest, string fallbackOutputPath, string destinationFolder)
+        private static async Task ProcessAssemblies(ThunderKit.Core.Manifests.Manifest manifest, string fallbackOutputPath, string destinationFolder, bool IncludePDBfile = false)
         {
             var assemblyDatums = manifest.Data.OfType<AssemblyDefinitions>().ToList();
             if (!assemblyDatums.Any())
@@ -148,6 +148,23 @@ namespace ADOFAIRunner.Core
                     else
                     {
                         Debug.LogWarning($"Could not find assembly file: {sourceFile}");
+                    }
+
+                    if (IncludePDBfile)
+                    {
+                        string assemblyPDB = $"{assemblyDefinition.name}.pdb";
+                        string sourcePDBFile = Path.Combine(assemblySourcePath, assemblyPDB);
+
+                        if (File.Exists(sourcePDBFile))
+                        {
+                            string destPDBFile = Path.Combine(destinationFolder, Path.GetFileName(sourcePDBFile));
+                            File.Copy(sourcePDBFile, destPDBFile, true);
+                            Debug.Log($"Copied PDB file: {Path.GetFileName(sourcePDBFile)}");
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"Could not find PDB file: {sourcePDBFile}");
+                        }
                     }
                 }
             }
