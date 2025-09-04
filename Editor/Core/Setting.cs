@@ -21,8 +21,8 @@ namespace ADOFAIRunner.Core
         public int AvailableModsSelectedIndex;
 
         public bool IncludePDBFile = true;
-        public  string[] AvailableBuildOptions = new string[] { "Unity Mod Manager", "BepInEx" };
-        int _AvailableBuildOptionsSelectedIndex;
+        public string[] AvailableBuildOptions = new string[] { "Unity Mod Manager", "BepInEx" };
+        [SerializeField] int _AvailableBuildOptionsSelectedIndex;
         public  int AvailableBuildOptionsSelectedIndex
         {
             get
