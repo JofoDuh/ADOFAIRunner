@@ -22,12 +22,12 @@ Unity Editor extension for ADOFAI mod developers working alongside Thunderkit.
 3. Configurations
     - Once the package finish importing. Set up ADOFAI Runner's settings by clicking on the setting icon on the toolbar, that should appear top left after the package finish importing: ![ToolBar](./Images/ToolBar.png)
 ***
-- ## Setting up ADOFAI Runner's settings
-    - ## General
-        - ThunderKit Export Path: The folder that ThunderKit compiles by default to. The folder should have some folders already inside depending on what you've done. "Libraries" folder should exist if you've compiled your mod assembly before and the "AssetBundleStaging" should exist if you've compiled assets bundle with ThunderKit before. Once you've pinpointed the folder, input the path to this field.
-        - Include PDB File: Just includes the PDB file when moving for debugging purposes.
-        - Mod List: Here you can add all the ThunderKit pipeline for all the mods you are currently developing in the Unity Project modding environment.
-        ### Example: ![General](./Images/GeneralSetting.png)
-    - ## UMM & BepInEx
-        - Mod Path: Just the folder within your game directory of the corresponding mod loader, that holds all the different mod folders.
-        - Game Executable: The ADOFAI executable path of the corresponding mod loader.
+## Setting up ADOFAI Runner's settings
+  - ## General
+      - ThunderKit Export Path: The folder that ThunderKit compiles by default to. The folder should have some folders already inside depending on what you've done. "Libraries" folder should exist if you've compiled your mod assembly before and the "AssetBundleStaging" should exist if you've compiled assets bundle with ThunderKit before. Once you've pinpointed the folder, input the path to this field.
+      - Include PDB File: Just includes the PDB file when moving for debugging purposes.
+      - Mod List: Here you can add all the ThunderKit pipeline for all the mods you are currently developing in the Unity Project modding environment.
+      ### Example: ![General](./Images/GeneralSetting.png)
+  - ## UMM & BepInEx
+      - Mod Path: Just the folder within your game directory of the corresponding mod loader, that holds all the different mod folders.
+      - Game Executable: The ADOFAI executable path of the corresponding mod loader.
