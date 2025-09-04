@@ -20,7 +20,7 @@ Unity Editor extension for ADOFAI mod developers working alongside Thunderkit.
         - Head over to the package manager in your Unity Project. Hit the plus top left of the panel, and click "Add package from git URL". ![PMGit](./Images/AddPackageGit.png)
         - Then paste `https://github.com/JofoDuh/ADOFAIRunner.git` into the field and click add afterwards. ![GitLink](./Images/GitLink.png)
 3. Configurations
-    - Once the package finish importing. Set up ADOFAI Runner's settings by clicking on the setting icon on the toolbar, that should appear top left after the package finish importing: ![ToolBar](./Images/Toolbar.png)
+    - Once the package finish importing. Set up ADOFAI Runner's settings by clicking on the setting icon on the toolbar, that should appear top left after the package finish importing: ![ToolBar](./Images/ToolBar.png)
 ***
 - ## Setting up ADOFAI Runner's settings
     - ## General
