@@ -1,7 +1,10 @@
 using ADOFAIRunner.Common;
+using ADOFAIRunner.DefineSymbols.Core;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using ADOFAIRunner.DefineSymbols.Toolbar;
+using ADOFAIRunner.Toolbar;
 
 namespace ADOFAIRunner.Core
 {
@@ -11,13 +14,11 @@ namespace ADOFAIRunner.Core
         public static Setting setting;
         static Main()
         {
-            SetupEnvironment();
+            EditorApplication.delayCall += SetupEnvironment;
         }
         private static void SetupEnvironment()
         {
             Debug.Log("Setting up ADOFAI Runner environment...");
-
-            string assetPath = Constants.settingsFolder + "/ADOFAIRunnerSettings.asset";
 
             if (!Directory.Exists(Constants.settingsFolder))
             {
@@ -25,16 +26,24 @@ namespace ADOFAIRunner.Core
                 AssetDatabase.Refresh();
             }
 
+            string assetPath = Constants.settingsFolder + "/ADOFAIRunnerSettings.asset";
             setting = AssetDatabase.LoadAssetAtPath<Setting>(assetPath);
 
             if (setting == null)
             {
+                Debug.Log("setting is Null!");
                 setting = ScriptableObject.CreateInstance<Setting>();
                 setting.Initialize(); 
                 AssetDatabase.CreateAsset(setting, assetPath);
                 AssetDatabase.SaveAssets();
                 Debug.Log($"Created new settings asset at {assetPath}");
             }
+            setting.AvailableBuildOptionsSelectedIndex = DefineSymbolToggler.GetBuildFromDefines();
+            EditorUtility.SetDirty(setting);
+
+            Logger.Init();
+            RunADOFAIToolbar.Init();
+            RunADOFAISymbolToolbar.Init();
 
             AssetDatabase.Refresh();
         }

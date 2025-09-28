@@ -1,12 +1,10 @@
 using ADOFAIRunner.Common;
 using System;
 using System.IO;
-using UnityEditor;
 using UnityEngine;
 
 namespace ADOFAIRunner.Core
 {
-    [InitializeOnLoad]
     public static class Logger
     {
         private static readonly string logFilePath;
@@ -20,7 +18,7 @@ namespace ADOFAIRunner.Core
 
             Application.logMessageReceived += HandleLog;
         }
-
+        public static void Init() { }
         private static void HandleLog(string logString, string stackTrace, LogType type)
         {
             try

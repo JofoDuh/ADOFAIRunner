@@ -1,3 +1,4 @@
+using ADOFAIRunner.Common;
 using ADOFAIRunner.Core;
 using ADOFAIRunner.DefineSymbols.Core;
 using UnityEditor;
@@ -7,7 +8,7 @@ namespace ADOFAIRunner.Utilities
 {
     public static class ProjectUtilities
     {
-        [MenuItem("Tools/Open Console %#c")]
+        [MenuItem(Constants.ADOFAIRunnerMenuRoot + "Open Console %#c", false, priority: Constants.ADOFAIRunnerMenuPriority)]
         public static void OpenConsoleWindow()
         {
             var assembly = typeof(EditorWindow).Assembly;

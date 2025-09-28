@@ -1,4 +1,6 @@
+using ADOFAIModdingHelper.Core.ScriptableObjects; 
 using ADOFAIRunner.Utilities;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
@@ -30,22 +32,16 @@ namespace ADOFAIRunner.Core
             {
                 ProjectUtilities.OpenConsoleWindow();
 
-                // 1. Get the selected pipeline from settings
-                var selectedPipeline = settings.AvailableMods[settings.AvailableModsSelectedIndex];
+                #region 1. Get the selected pipeline from settings
+                var selectedPipeline = settings.AvailableMods[settings.AvailableModsSelectedIndex].Pipeline;
                 if (selectedPipeline == null)
                 {
                     Debug.LogError("No pipeline selected in ADOFAIRunner settings. Aborting.");
                     return;
                 }
+                #endregion
 
-                // 2. Execute the ThunderKit pipeline
-                Debug.Log($"Executing pipeline: {selectedPipeline.name}...");
-                await selectedPipeline.Execute();
-                Debug.Log("Pipeline execution finished.");
-
-                ProjectUtilities.OpenConsoleWindow();
-
-                // 3. Determine source and destination paths
+                #region 2. Determine source and destination paths
                 var manifest = selectedPipeline.manifest;
                 if (manifest == null)
                 {
@@ -70,15 +66,30 @@ namespace ADOFAIRunner.Core
 
                 string modDestinationFolder = Path.Combine(baseModPath, modName);
                 string assetsDestinationFolder = Path.Combine(modDestinationFolder, "assets");
+                #endregion
 
-                // 4. Process and move assembly files
+                #region 3. Process mod info
+                await ProcessInfo(settings.AvailableMods[settings.AvailableModsSelectedIndex].ModInfo, modDestinationFolder, build);
+                #endregion
+
+                #region 4. Execute the ThunderKit pipeline
+                Debug.Log($"Executing pipeline: {selectedPipeline.name}...");
+                await selectedPipeline.Execute();
+                Debug.Log("Pipeline execution finished.");
+                #endregion
+
+                ProjectUtilities.OpenConsoleWindow();
+
+                #region 5. Process and move assembly files
                 await ProcessAssemblies(manifest, settings.ThunderkitOutputPath, modDestinationFolder, settings.IncludePDBFile);
+                #endregion
 
-                // 5. Process and move asset bundles
-                await ProcessAssetBundles(manifest, settings.ThunderkitOutputPath, assetsDestinationFolder);
+                #region 6. Process and move asset bundles
+                await ProcessAssetBundles(manifest, settings.ThunderkitOutputPath, assetsDestinationFolder); 
+                #endregion
             }
 
-            // 6. Launch the game executable
+            #region 7. Launch the game executable
             string exePath = build switch
             {
                 BuildTarget.Auto => buildType == "BEPINEX" ? settings.BepInExExePath : settings.UnityModManagerExePath,
@@ -94,7 +105,77 @@ namespace ADOFAIRunner.Core
             }
 
             Debug.Log($"Launching executable: {exePath}");
-            LaunchExecutable(exePath);
+            LaunchExecutable(exePath); 
+            #endregion
+        }
+
+        /// <summary>
+        /// Process the mod info if ADOFAI Modding Helper is present
+        /// </summary>
+        private static async Task ProcessInfo(ModInfo modInfo, string destinationFolder, BuildTarget buildTarget)
+        {
+            if (modInfo == null)
+            {
+                Debug.Log("ModInfo is null");
+                return;
+            }
+            switch (buildTarget)
+            {
+                case BuildTarget.Auto:
+                    string buildType = ProjectUtilities.GetCurrentBuild();
+                    if (buildType == "BEPINEX")
+                    {
+                        goto case BuildTarget.BepInEx;
+                    }
+                    else if (buildType == "UNITYMODMANAGER")
+                    {
+                        goto case BuildTarget.UMM;
+                    }
+                    Debug.Log("No Appropriate Build");
+                    return;
+                case BuildTarget.UMM:
+                    ModInfoUMM modInfoUMM = modInfo.modInfoUMM;
+                    if (modInfoUMM == null)
+                    {
+                        Debug.Log("modInfoUMM is null");
+                        return;
+                    }
+
+                    Directory.CreateDirectory(destinationFolder);
+                    var settings = new JsonSerializerSettings
+                    {
+                        Formatting = Formatting.Indented,
+                    };
+                    var json = JsonConvert.SerializeObject(modInfoUMM, settings);
+                    File.WriteAllText(Path.Combine(destinationFolder, "Info.json"), json);
+
+                    break;
+                case BuildTarget.BepInEx:
+                    ModInfoBIE modInfoBIE = modInfo.modInfoBIE;
+
+                    Debug.Log("Renaming!");
+                    string infoFilePath = modInfoBIE.BIPModInfoCSPath;
+                    if (!File.Exists(infoFilePath))
+                    {
+                        Debug.LogError($".cs not found at {infoFilePath}");
+                        return;
+                    }
+
+                    string[] lines = File.ReadAllLines(infoFilePath);
+                    for (int i = 0; i < lines.Length; i++)
+                    {
+                        if (lines[i].Contains("PLUGIN_GUID"))
+                            lines[i] = $"        public const string PLUGIN_GUID = \"{modInfoBIE.GUID}\";";
+                        else if (lines[i].Contains("PLUGIN_NAME"))
+                            lines[i] = $"        public const string PLUGIN_NAME = \"{modInfoBIE.PluginName}\";";
+                        else if (lines[i].Contains("PLUGIN_VERSION"))
+                            lines[i] = $"        public const string PLUGIN_VERSION = \"{modInfoBIE.PluginVersion}\";";
+                    }
+                    File.WriteAllLines(infoFilePath, lines);
+                    Debug.Log($"Updated EditorCustomModulesInfo.cs with {modInfoBIE.PluginName}");
+                    break;
+            }
+            await Task.CompletedTask;
         }
 
         /// <summary>

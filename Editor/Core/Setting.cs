@@ -1,7 +1,8 @@
+using ADOFAIRunner.Core.DataStructures;
 using ADOFAIRunner.DefineSymbols.Core;
 using System.Collections.Generic;
 using System.IO;
-using ThunderKit.Core.Pipelines;
+using UnityEditor;
 using UnityEngine;
 
 namespace ADOFAIRunner.Core
@@ -17,7 +18,7 @@ namespace ADOFAIRunner.Core
 
         public string ThunderkitOutputPath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, "ThunderKit");
 
-        public List<Pipeline> AvailableMods = new List<Pipeline>();
+        public List<ModBuild> AvailableMods = new List<ModBuild>();
         public int AvailableModsSelectedIndex;
 
         public bool IncludePDBFile = true;
@@ -35,6 +36,13 @@ namespace ADOFAIRunner.Core
                 _AvailableBuildOptionsSelectedIndex = value;
                 DefineSymbolToggler.SetBuild(value);
             }
+        }
+
+        private void OnValidate()
+        {
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+#endif
         }
 
         public void Initialize()

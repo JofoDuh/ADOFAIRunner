@@ -7,8 +7,7 @@ using static UnityEditor.EditorGUILayout;
 
 namespace ADOFAIRunner.DefineSymbols.Toolbar
 {
-    [InitializeOnLoad]
-    public static class RunADOFAIToolbar
+    public static class RunADOFAISymbolToolbar
     {
         static Setting setting = Main.setting;
         static string[] Buildtooltips = new string[] {
@@ -16,11 +15,10 @@ namespace ADOFAIRunner.DefineSymbols.Toolbar
             "Use to switch build for selected mod\n\nCurrent Build: BepInEx",
         };
 
-        static RunADOFAIToolbar()
+        public static void Init()
         {
             ToolbarExtender.LeftToolbarGUI.Insert(0 ,OnToolbarGUI);
         }
-
         private static void OnToolbarGUI()
         {
             using (new VerticalScope())

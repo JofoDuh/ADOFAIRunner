@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -8,6 +6,7 @@ namespace ADOFAIRunner.Common
 {
     public class Constants
     {
+        public const int ADOFAIRunnerMenuPriority = 15;
         public const string ADOFAIRunnerMenuRoot = "Tools/ADOFAI Runner/";
         public const string settingsFolder = "Assets/ADOFAIRunnerSettings";
         public const string LogFolder = "Assets/ADOFAIRunnerSettings/Logs";
@@ -25,7 +24,7 @@ namespace ADOFAIRunner.Common
             else
             {
                 Debug.LogWarning("ADOFAIRunner.asmdef not found! Paths will fallback.");
-                ADOFAIRunnerRootPath = "Assets/Plugins/ADOFAIRunner";
+                ADOFAIRunnerRootPath = "Assets/Plugins/Jofo's APIs/ADOFAIRunner";
             }
         }
     }

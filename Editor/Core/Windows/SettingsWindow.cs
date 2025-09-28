@@ -11,7 +11,6 @@ namespace ADOFAIRunner.Core.Windows
     {
 
         [SerializeField] private VisualTreeAsset MainPanel;
-        [SerializeField] private VisualTreeAsset SettingPanelWrapper;
 
         private string[] settingsOptions =
         {
@@ -23,7 +22,7 @@ namespace ADOFAIRunner.Core.Windows
         VisualElement _settingPanelContainer;
         Setting _adofaiSetting;
 
-        [MenuItem(Constants.ADOFAIRunnerMenuRoot + "Settings")]
+        [MenuItem(Constants.ADOFAIRunnerMenuRoot + "Settings", false, priority: Constants.ADOFAIRunnerMenuPriority)]
         public static void ShowSetting()
         {
             GetWindow<SettingsWindow>("Settings");
@@ -33,7 +32,6 @@ namespace ADOFAIRunner.Core.Windows
         {
             Debug.Log(Constants.ADOFAIRunnerRootPath);
             MainPanel.CloneTree(rootVisualElement);
-
             _settingslist = rootVisualElement.Q<ListView>("settings-list");
             _settingPanelContainer = rootVisualElement.Q<VisualElement>("SPContainer");
 

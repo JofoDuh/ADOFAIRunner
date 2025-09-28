@@ -1,3 +1,6 @@
+# WARNING
+This package is deprecated and is no longer updated, since it has been intergrated into the package "ADOFAI Modding Helper"!
+***
 # ADOFAI Runner
 Unity Editor extension for ADOFAI mod developers working alongside Thunderkit.
 **Make sure to read the instructions to properly use this package!**
